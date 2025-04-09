@@ -41,3 +41,30 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase files
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+firebase-export/
+firebase-data/
+
+# Firebase local emulator data
+firebase/emulator/
+
+# Firebase environment variables
+.env
+.env.local
+.env.development
+.env.production
+.runtimeconfig.json
+
+# Firebase service account keys
+*-firebase-adminsdk-*.json
+firebase-service-account.json
+firebase-key.json
+serviceAccountKey.json
