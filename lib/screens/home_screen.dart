@@ -23,11 +23,16 @@ class HomeScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      body: Column(
-        children: [
-          userWidget,
-          ElevatedButton(onPressed: () {}, child: const Text('logout')),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            userWidget,
+            ElevatedButton(onPressed: () {}, child: const Text('logout')),
+            ElevatedButton(
+                onPressed: () {}, child: const Text('delete profile')),
+          ],
+        ),
       ),
     );
   }

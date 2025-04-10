@@ -8,10 +8,6 @@ class UserRepository {
 
   UserRepository(this._auth, this._firestore);
 
-  Future<void> create(CurrentUser user) async {
-    await _firestore.collection('users').doc(user.id).set(user.toMap());
-  }
-
   Future<CurrentUser?> getUserById(String uid) async {
     try {
       final userDoc = await _firestore.collection('users').doc(uid).get();
@@ -34,10 +30,6 @@ class UserRepository {
 
   Future<void> updateUser(CurrentUser user) async {
     await _firestore.collection('users').doc(user.id).update(user.toMap());
-  }
-
-  Future<void> deleteUser(String userId) async {
-    await _firestore.collection('users').doc(userId).delete();
   }
 
   // na potem

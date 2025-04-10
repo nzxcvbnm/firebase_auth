@@ -12,6 +12,7 @@ class AuthScreen extends ConsumerWidget {
     final bool haveAccount = ref.watch(haveAccountProvider);
     return Scaffold(
       appBar: AppBar(
+        title: const Text('do you have an account?'),
         actions: [
           Switch(
             value: haveAccount,
