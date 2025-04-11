@@ -1,3 +1,4 @@
+import 'package:auth_firebase/extensions/string_extensions.dart';
 import 'package:auth_firebase/models/current_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,6 +42,10 @@ class AuthRepository {
         final userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
       } on FirebaseAuthException catch (e) {
+        if (e.code == 'invalid-credential') {
+          return 'Incorrect password or there is no user with this email.\nReset password or try to register.'
+              .toTranslate();
+        }
         return e.message;
       }
     } catch (e) {
