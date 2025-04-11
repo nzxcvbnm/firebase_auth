@@ -1,3 +1,4 @@
+import 'package:auth_firebase/extensions/string_extensions.dart';
 import 'package:auth_firebase/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,15 +34,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             if (error != '') Text(error!),
             TextField(
                 controller: _emailController,
-                decoration: const InputDecoration(hintText: 'email')),
+                decoration: InputDecoration(hintText: 'email'.toTranslate())),
             TextField(
                 controller: _passwordController,
-                decoration: const InputDecoration(hintText: 'password')),
+                decoration:
+                    InputDecoration(hintText: 'password'.toTranslate())),
             ElevatedButton(
                 onPressed: () async {
                   if (_emailController.text.isEmpty ||
                       _passwordController.text.isEmpty) {
-                    error = 'Email and password is needed.';
+                    error = 'Email and password is needed.'.toTranslate();
                     setState(() {});
                     return;
                   }
@@ -56,7 +58,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     setState(() {});
                   }
                 },
-                child: const Text('login'))
+                child: Text('login'.toTranslate())),
+            ElevatedButton(
+                onPressed: () async {
+                  if (_emailController.text.isEmpty) {
+                    error = 'Email is needed.'.toTranslate();
+                    setState(() {});
+                    return;
+                  }
+
+                  final potentialError = await ref
+                      .read(authRepositoryProvider)
+                      .sendPasswordResetEmail(_emailController.text.trim());
+
+                  if (potentialError != null) {
+                    error = potentialError;
+                    setState(() {});
+                  } else {
+                    error = 'Reset email password was sent'.toTranslate();
+                    setState(() {});
+                  }
+                },
+                child: Text('reset password'.toTranslate())),
           ],
         ),
       ),

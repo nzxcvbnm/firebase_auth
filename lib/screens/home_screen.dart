@@ -1,7 +1,7 @@
+import 'package:auth_firebase/extensions/string_extensions.dart';
 import 'package:auth_firebase/models/current_user.dart';
 import 'package:auth_firebase/providers/current_user_stream_provider.dart';
 import 'package:auth_firebase/repositories/auth_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,12 +38,12 @@ class HomeScreen extends ConsumerWidget {
                 onPressed: () {
                   ref.read(authRepositoryProvider).logout();
                 },
-                child: const Text('logout')),
+                child: Text('logout'.toTranslate())),
             ElevatedButton(
                 onPressed: () {
                   ref.read(authRepositoryProvider).deleteUser();
                 },
-                child: const Text('delete profile')),
+                child: Text('delete profile'.toTranslate())),
           ],
         ),
       ),

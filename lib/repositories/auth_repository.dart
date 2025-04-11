@@ -49,12 +49,17 @@ class AuthRepository {
     return null;
   }
 
-  Future<void> sendPasswordResetEmail(String email) async {
+  Future<String?> sendPasswordResetEmail(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
+      try {
+        await _auth.sendPasswordResetEmail(email: email);
+      } on FirebaseAuthException catch (e) {
+        return e.message;
+      }
     } catch (e) {
-      throw Exception('Error sending password reset email: $e');
+      print(e);
     }
+    return null;
   }
 
   Future<void> logout() async {
