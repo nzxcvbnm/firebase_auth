@@ -1,6 +1,10 @@
 import 'package:auth_firebase/models/current_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final authRepositoryProvider = Provider(
+    (ref) => AuthRepository(FirebaseAuth.instance, FirebaseFirestore.instance));
 
 class AuthRepository {
   AuthRepository(this._auth, this._firestore);
@@ -9,11 +13,28 @@ class AuthRepository {
   final FirebaseFirestore _firestore;
 
   Future<void> create(CurrentUser user) async {
-    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: user.email,
-      password: user.password,
-    );
-    await _firestore.collection('users').doc(user.id).set(user.toMap());
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: user.email,
+        password: user.password,
+      );
+
+      final userId = userCredential.user!.uid;
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .set(user.copyWith(id: userId).toMap());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> login(String email, String password) async {
+    final userCredential = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+
+    final uid = userCredential.user!.uid;
   }
 
   Future<void> sendPasswordResetEmail(String email) async {
@@ -24,13 +45,21 @@ class AuthRepository {
     }
   }
 
-  Future<void> deleteUser(String userId) async {
+  Future<void> logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      print('Błąd podczas wylogowywania: $e');
+    }
+  }
+
+  Future<void> deleteUser() async {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
         await user.delete();
+        await _firestore.collection('users').doc(user.uid).delete();
       }
-      await _firestore.collection('users').doc(userId).delete();
     } catch (e) {
       throw Exception('Error deleting user: $e');
     }

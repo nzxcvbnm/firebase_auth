@@ -1,10 +1,10 @@
 class CurrentUser {
-  String id;
+  String? id;
   String username;
   String email;
   String password;
   String? emailOrUsername;
-  String imageUrl;
+  String? imageUrl;
   String description;
   DateTime createdAt;
   List<String> favorites;
@@ -12,9 +12,9 @@ class CurrentUser {
   CurrentUser(
     this.username,
     this.email,
-    this.password,
+    this.password, {
     this.id,
-    this.imageUrl, {
+    this.imageUrl,
     this.emailOrUsername,
     required this.description,
     required this.createdAt,
@@ -36,8 +36,8 @@ class CurrentUser {
       username ?? this.username,
       email ?? this.email,
       password ?? this.password,
-      id ?? this.id,
-      imageUrl ?? this.imageUrl,
+      id: id ?? this.id,
+      imageUrl: imageUrl ?? this.imageUrl,
       emailOrUsername: emailOrUsername ?? this.emailOrUsername,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
@@ -63,8 +63,8 @@ class CurrentUser {
       map['username'] as String,
       map['email'] as String,
       map['password'] as String,
-      map['id'] as String,
-      map['imageUrl'] ?? emptyProfilePic,
+      id: map['id'],
+      imageUrl: map['imageUrl'] ?? emptyProfilePic,
       emailOrUsername: map['emailOrUsername'] as String?,
       description: map['description'] ?? '',
       createdAt: map['createdAt'] == null
@@ -78,8 +78,8 @@ class CurrentUser {
         '',
         '',
         '',
-        '',
-        emptyProfilePic,
+        id: '',
+        imageUrl: emptyProfilePic,
         description: '',
         createdAt: DateTime.now(),
         favorites: [],
