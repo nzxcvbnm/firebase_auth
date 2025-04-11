@@ -12,29 +12,41 @@ class AuthRepository {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
 
-  Future<void> create(CurrentUser user) async {
+  Future<String?> create(CurrentUser user) async {
     try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: user.email,
-        password: user.password,
-      );
+      try {
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: user.email,
+          password: user.password,
+        );
 
-      final userId = userCredential.user!.uid;
-      await _firestore
-          .collection('users')
-          .doc(userId)
-          .set(user.copyWith(id: userId).toMap());
+        final userId = userCredential.user!.uid;
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .set(user.copyWith(id: userId).toMap());
+      } on FirebaseAuthException catch (e) {
+        return e.message;
+      }
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
-  Future<void> login(String email, String password) async {
-    final userCredential = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
-
-    final uid = userCredential.user!.uid;
+  Future<String?> login(String email, String password) async {
+    try {
+      try {
+        final userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
+      } on FirebaseAuthException catch (e) {
+        return e.message;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
   }
 
   Future<void> sendPasswordResetEmail(String email) async {

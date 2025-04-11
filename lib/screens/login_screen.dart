@@ -20,6 +20,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
+  String? error = '';
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -28,6 +30,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (error != '') Text(error!),
             TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(hintText: 'email')),
@@ -35,10 +38,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 controller: _passwordController,
                 decoration: const InputDecoration(hintText: 'password')),
             ElevatedButton(
-                onPressed: () {
-                  ref.read(authRepositoryProvider).login(
-                      _emailController.text.trim(),
-                      _passwordController.text.trim());
+                onPressed: () async {
+                  if (_emailController.text.isEmpty ||
+                      _passwordController.text.isEmpty) {
+                    error = 'Email and password is needed.';
+                    setState(() {});
+                    return;
+                  }
+
+                  final potentialError = await ref
+                      .read(authRepositoryProvider)
+                      .login(_emailController.text.trim(),
+                          _passwordController.text.trim());
+
+                  if (potentialError != null) {
+                    error = potentialError;
+                    setState(() {});
+                  }
                 },
                 child: const Text('login'))
           ],

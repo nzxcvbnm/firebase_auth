@@ -23,6 +23,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     super.dispose();
   }
 
+  String? error = '';
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -31,7 +33,9 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (error != '') Text(error!),
             TextField(
+              // TODO validacja
               controller: _usernameController,
               decoration: const InputDecoration(hintText: 'username'),
             ),
@@ -42,7 +46,20 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                 controller: _passwordController,
                 decoration: const InputDecoration(hintText: 'password')),
             ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  if (_emailController.text.isEmpty ||
+                      _passwordController.text.isEmpty) {
+                    error = 'Email and password is needed.';
+                    setState(() {});
+                    return;
+                  }
+
+                  if (_usernameController.text.length < 3) {
+                    error = 'Username must be at least 3 characters.';
+                    setState(() {});
+                    return;
+                  }
+
                   final CurrentUser user = CurrentUser(
                       _usernameController.text.trim(),
                       _emailController.text.trim(),
@@ -50,7 +67,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                       description: '',
                       createdAt: DateTime.now());
 
-                  ref.read(authRepositoryProvider).create(user);
+                  final potentialError =
+                      await ref.read(authRepositoryProvider).create(user);
+                  if (potentialError != null) {
+                    error = potentialError;
+                    setState(() {});
+                  }
                 },
                 child: const Text('registration'))
           ],

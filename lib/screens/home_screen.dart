@@ -36,7 +36,7 @@ class HomeScreen extends ConsumerWidget {
             userWidget,
             ElevatedButton(
                 onPressed: () {
-                  final userId = FirebaseAuth.instance.currentUser?.uid;
+                  ref.read(authRepositoryProvider).logout();
                 },
                 child: const Text('logout')),
             ElevatedButton(
